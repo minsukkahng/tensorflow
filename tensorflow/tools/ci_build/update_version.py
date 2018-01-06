@@ -17,7 +17,7 @@
 # Automatically update TensorFlow version in source files
 #
 # Usage:
-#           ./tensorflow/tools/ci_build/update_version.py --version 1.4.0-rc0
+#           ./tensorflow/tools/ci_build/update_version.py --version 1.4.0-rc1
 #           ./tensorflow/tools/ci_build/update_version.py --nightly
 #
 """Update version of TensorFlow script."""
@@ -277,8 +277,8 @@ def check_for_lingering_string(lingering_string):
   formatted_string = lingering_string.replace(".", r"\.")
   try:
     linger_str_output = subprocess.check_output(
-        ['grep', '-rnoH', formatted_string, TF_SRC_DIR])
-    linger_strs = linger_str_output.decode('utf8').split("\n")
+        ["grep", "-rnoH", formatted_string, TF_SRC_DIR])
+    linger_strs = linger_str_output.decode("utf8").split("\n")
   except subprocess.CalledProcessError:
     linger_strs = []
 
@@ -333,8 +333,10 @@ def main():
   old_version = get_current_semver_version()
 
   if args.nightly:
+    # dev minor version is one ahead of official
+    nightly_minor_ver = int(old_version.minor) + 1
     new_version = Version(old_version.major,
-                          old_version.minor,
+                          str(nightly_minor_ver),
                           old_version.patch,
                           "-dev" + time.strftime("%Y%m%d"),
                           NIGHTLY_VERSION)
